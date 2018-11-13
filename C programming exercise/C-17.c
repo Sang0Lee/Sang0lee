@@ -41,3 +41,4 @@ void main(){
 	printf("두 값의 곱은 %d\n", arry_multiply(&arry[0][0], x1, y1, x2, y2));
 
 }
+
