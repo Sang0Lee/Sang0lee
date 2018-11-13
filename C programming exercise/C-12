@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+int rearrange(int num, int order[]){
+	
+	int cnt, result, temp;
+
+	for(cnt = 0, result = 0; cnt < 8; cnt++){ // int변수만을 고려하므로 총 8개의 헥사코드가 발생함. 따라서 8번의 실행
+
+		temp = 0xf0000000 >> (4 * cnt); // 입력된 배열에는 차례대로 최상위 헥사코드부터 최하위까지 이동하므로 이에 맞춰 bit mask 설정
+		temp = num & temp; // 순서대로 발생된 bit mask를 재배열할 대상 숫자와 bit and
+		temp <<= (4 * cnt); // mask 처리된 값을 최상위 헥사코드로 이동시켜 정규화
+
+		temp = temp >> (4 * (8 - order[cnt])); // 정규화 된 헥사코드를 배열에 들어간 순서대로 헥사코드 위치 변경
+		temp &= (0xf << (4*(order[cnt]-1))); // 별도의 주석하지 말 것
+		result |= temp; // 지정된 위치로 이동된 헥사코드를 최종 반환 변수에 bit or 연산하여 저장
+
+	}
+
+	return result;
+
+} 
+
+void main(){
+
+	int num, arry[8];
+	int cnt;
+
+	printf("대상 숫자 입력 : ");
+	scanf("%d", &num);
+
+	for(cnt = 0; cnt < 8;){ // int 변수만을 고려하므로 총 8개의 헥사코드가 발생함. 따라서 8개의 저장공간이 필요하며 이를 배열로 저장
+
+		printf("%d번째 순서 입력 : ", cnt + 1);
+		scanf("%d", &arry[cnt]);
+		if(arry[cnt] < 1 || arry[cnt] > 8) printf("잘못된 입력임. 다시 입력하셈\n\n"); // 비정상 입력 예외처리
+		else cnt++; // 정상 입력인 경우에만 다음 저장공간으로 이동
+
+	}
+	
+	printf("\n입력된 숫자는 %#x(%d), 순서를 재배치한 결과는 %#x\n", num, num, rearrange(num, arry)); // 재배치 함수 실행, 결과 출력
+
+}
